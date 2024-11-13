@@ -1,12 +1,16 @@
-from crewai import Agent, Crew, Process, Task
+import os
+from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
 
-# Uncomment the following line to use an example of a custom tool
-# from edu.tools.custom_tool import MyCustomTool
+from crewai_tools import SerperDevTool
 
-# Check our tools documentations for more information on how to use them
-# from crewai_tools import SerperDevTool
+serper_api_key = os.getenv('SERPER_API_KEY')
+serper_tool = SerperDevTool(api_key=serper_api_key)
 
+llm = LLM(
+    model="gpt-4o-mini",
+    api_key=os.getenv('OPENAI_API_KEY')
+)
 @CrewBase
 class Edu():
 	"""Edu crew"""
@@ -18,14 +22,16 @@ class Edu():
 	def researcher(self) -> Agent:
 		return Agent(
 			config=self.agents_config['researcher'],
-			# tools=[MyCustomTool()], # Example of custom tool, loaded on the beginning of file
-			verbose=True
+			llm=llm,
+			verbose=True,
+			tools=[serper_tool]
 		)
 
 	@agent
 	def reporting_analyst(self) -> Agent:
 		return Agent(
 			config=self.agents_config['reporting_analyst'],
+			llm=llm,
 			verbose=True
 		)
 

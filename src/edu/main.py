@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 import sys
 import warnings
+import os
+from langtrace_python_sdk import langtrace
 
 from edu.crew import Edu
+
+langtrace_api_key = os.getenv('LANGTRACE_API_KEY')
+langtrace.init(api_key = langtrace_api_key)
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
